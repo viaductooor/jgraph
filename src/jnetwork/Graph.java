@@ -1,15 +1,15 @@
 package jnetwork;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import jnetwork.Graph.Entry;
+import java.util.Set;
 
 /**An implementation of graph with structure of adjacency list.
  * 
- * @author wujie
+ * @author John Smith
  *
  * @param <K> Type of the nodes
  * @param <L> Type of the links
@@ -93,6 +93,11 @@ public class Graph<K, L> {
 		}
 	}
 	
+	/**
+	 * An entrySet is a set of entries of type {@link Entry}.
+	 * Use function to visit all the links of the graph.
+	 * @return
+	 */
 	public List<Graph.Entry<K,L>> entrySet() {
 		List<Entry<K, L>> l = new LinkedList<Graph.Entry<K,L>>();
 		for(java.util.Map.Entry<K, HashMap<K, L>> _m:map.entrySet()) {
@@ -104,5 +109,17 @@ public class Graph<K, L> {
 			}
 		}
 		return l;
+	}
+	
+	/**
+	 * Return all the distinct nodes of the graph
+	 * @return
+	 */
+	public Set<K> nodes(){
+		HashSet<K> set = new HashSet<K>();
+		for (Map.Entry<K, HashMap<K,L>> entry:map.entrySet()) {
+			set.add(entry.getKey());
+		}
+		return set;
 	}
 }

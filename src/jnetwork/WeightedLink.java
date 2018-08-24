@@ -1,9 +1,9 @@
 package jnetwork;
 
-/**If you want to perform some shrotest-path like algorithms on a graph, the
+/**If you want to perform some shortest path like algorithms on a graph, the
  * links of it must implement this interface.
  *
- * @author wujie
+ * @author John Smith
  *
  */
 @FunctionalInterface
