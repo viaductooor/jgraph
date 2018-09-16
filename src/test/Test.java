@@ -7,7 +7,7 @@ import jnetwork.Graph;
 public class Test {
 	public static void main(String[] args) {
 		Supplier<TestLink> defaltLinkBuilder = ()->new TestLink(1);
-		Graph<Integer, TestLink> g = new Graph();
+		Graph<Integer, TestLink> g = new Graph<Integer,TestLink>();
 		g.addEdge(1, 2, defaltLinkBuilder.get());
 		g.addEdge(1,3,defaltLinkBuilder.get());
 		g.addEdge(2,4,defaltLinkBuilder.get());

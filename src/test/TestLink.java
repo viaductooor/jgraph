@@ -1,8 +1,8 @@
 package test;
 
-import jnetwork.WeightedLink;
+import jnetwork.WeightedEdge;
 
-public class TestLink implements WeightedLink{
+public class TestLink implements WeightedEdge{
 	private float flow;
 	
 	public TestLink(float flow) {
@@ -21,6 +21,12 @@ public class TestLink implements WeightedLink{
 	public float getWeight() {
 		// TODO Auto-generated method stub
 		return this.flow;
+	}
+
+	@Override
+	public void setWeight(float w) {
+		// TODO Auto-generated method stub
+		this.flow = w;
 	}
 
 }
