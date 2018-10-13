@@ -1,4 +1,4 @@
-package jnetwork;
+package file;
 
 /**
  * Any class that implements this interface can easily have its objects written

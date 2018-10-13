@@ -1,5 +1,6 @@
 package functions;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,39 +16,39 @@ import jnetwork.WeightedEdge;
  * 
  * @author John Smith
  *
- * @param <K>
- *            the type of vertices
- * @param <L>
- *            the type of edges
+ * @param <V> the type of vertex
+ * @param <E> the type of edge
  */
-public class ShortestPath<K, L> {
+public class ShortestPath<V, E> {
+
+	private LinkedList<V> r;
 
 	/**
 	 * Standard Dijkstra Algorithm which to get shortest paths between one source
 	 * vertex and all other vertices
 	 * 
 	 * @param g
-	 *            the graph to be performed
+	 *            graph to be performed
 	 * @param begin
 	 *            source vertex
 	 * @return
 	 */
-	public HashMap<K, ShortestPath.Node<K>> one2all(Graph<K, ? extends WeightedEdge> g, K begin) {
-		HashMap<K, Node<K>> Q = new HashMap<K, ShortestPath.Node<K>>();
-		HashMap<K, Node<K>> S = new HashMap<K, ShortestPath.Node<K>>();
-		for (K k : g.vertices()) {
-			if (k == begin) {
-				Q.put(begin, new ShortestPath.Node<K>(0));
+	public HashMap<V, ShortestPath.Node<V>> one2all(Graph<V, ? extends WeightedEdge> g, V begin) {
+		HashMap<V, Node<V>> Q = new HashMap<V, ShortestPath.Node<V>>();
+		HashMap<V, Node<V>> S = new HashMap<V, ShortestPath.Node<V>>();
+		for (V k : g.vertices()) {
+			if (k.equals(begin)) {
+				Q.put(begin, new ShortestPath.Node<V>(0));
 			} else {
-				Q.put(k, new ShortestPath.Node<K>());
+				Q.put(k, new ShortestPath.Node<V>());
 			}
 		}
 		while (!Q.isEmpty()) {
 			// get the vertex of minimal weight from set Q, and remove it from Q
-			K minK = null;
-			Node<K> minNode = null;
+			V minK = null;
+			Node<V> minNode = null;
 			float minValue = Float.POSITIVE_INFINITY;
-			for (Map.Entry<K, Node<K>> entry : Q.entrySet()) {
+			for (Map.Entry<V, Node<V>> entry : Q.entrySet()) {
 				if (entry.getValue().getWeight() < minValue) {
 					minK = entry.getKey();
 					minValue = entry.getValue().getWeight();
@@ -68,12 +69,12 @@ public class ShortestPath<K, L> {
 			Q.remove(minK);
 			S.put(minK, minNode);
 
-			for (Entry<K, ? extends WeightedEdge> entry : g.getAdjNodes(minK).entrySet()) {
-				K _key = entry.getKey();
+			for (Entry<V, ? extends WeightedEdge> entry : g.getAdjNodes(minK).entrySet()) {
+				V _key = entry.getKey();
 				float _weight = entry.getValue().getWeight();
 				float _sum = minNode.getWeight() + _weight;
 				if (Q.containsKey(_key)) {
-					Node<K> _node = Q.get(_key);
+					Node<V> _node = Q.get(_key);
 					if (_node.getWeight() > _sum) {
 						_node.setWeight(_sum);
 						_node.setPreK(minK);
@@ -98,17 +99,17 @@ public class ShortestPath<K, L> {
 	 *            terminate vertex
 	 * @return
 	 */
-	public List<K> path(Graph<K, ? extends WeightedEdge> g, K begin, K end) {
-		HashMap<K, Node<K>> map = one2all(g, begin);
-		if (begin == end) {
+	public List<V> shortestPath(Graph<V, ? extends WeightedEdge> g, V begin, V end) {
+		HashMap<V, Node<V>> map = one2all(g, begin);
+		if (begin.equals(end)) {
 			return null;
 		}
 		if (map.get(end) == null) {
 			return null;
 		} else {
-			List<K> route = new LinkedList<K>();
+			List<V> route = new LinkedList<V>();
 			route.add(end);
-			Node<K> node = map.get(end);
+			Node<V> node = map.get(end);
 			while (node.getPreK() != begin) {
 				route.add(0, node.getPreK());
 				node = map.get(node.getPreK());
@@ -130,17 +131,17 @@ public class ShortestPath<K, L> {
 	 * @param end
 	 * @return
 	 */
-	public List<K> path(HashMap<K, HashMap<K, Node<K>>> allShortestPaths, K begin, K end) {
-		if (begin == end) {
+	public List<V> shortestPath(HashMap<V, HashMap<V, Node<V>>> allShortestPaths, V begin, V end) {
+		if (begin.equals(end)) {
 			return null;
 		}
-		HashMap<K, Node<K>> adjs = null;
-		Node<K> node = null;
-		List<K> route = new LinkedList<K>();
+		HashMap<V, Node<V>> adjs = null;
+		Node<V> node = null;
+		List<V> route = new LinkedList<V>();
 		if ((adjs = allShortestPaths.get(begin)) != null) {
 			if ((node = adjs.get(end)) != null) {
 				route.add(end);
-				while (node.getPreK() != begin) {
+				while (!node.getPreK().equals(begin)) {
 					route.add(0, node.getPreK());
 					node = adjs.get(node.getPreK());
 				}
@@ -151,12 +152,12 @@ public class ShortestPath<K, L> {
 		return null;
 	}
 
-	public float shortestPathLength(HashMap<K, HashMap<K, Node<K>>> allShortestPaths, K begin, K end) {
-		if (begin == end) {
+	public float shortestPathLength(HashMap<V, HashMap<V, Node<V>>> allShortestPaths, V begin, V end) {
+		if (begin.equals(end)) {
 			return 0;
 		}
-		HashMap<K, Node<K>> adjs = null;
-		Node<K> node = null;
+		HashMap<V, Node<V>> adjs = null;
+		Node<V> node = null;
 		if ((adjs = allShortestPaths.get(begin)) != null) {
 			if ((node = adjs.get(end)) != null) {
 				return node.weight;
@@ -172,10 +173,10 @@ public class ShortestPath<K, L> {
 	 *            the graph to be performed
 	 * @return
 	 */
-	public HashMap<K, HashMap<K, Node<K>>> allPaths(Graph<K, ? extends WeightedEdge> g) {
-		Set<K> nodes = g.vertices();
-		HashMap<K, HashMap<K, ShortestPath.Node<K>>> map = new HashMap<K, HashMap<K, ShortestPath.Node<K>>>();
-		for (K k : nodes) {
+	public HashMap<V, HashMap<V, Node<V>>> allPaths(Graph<V, ? extends WeightedEdge> g) {
+		Set<V> nodes = g.vertices();
+		HashMap<V, HashMap<V, ShortestPath.Node<V>>> map = new HashMap<V, HashMap<V, ShortestPath.Node<V>>>();
+		for (V k : nodes) {
 			map.put(k, one2all(g, k));
 		}
 		return map;

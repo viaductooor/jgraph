@@ -54,6 +54,110 @@ public class Graph<V, E> {
 	}
 
 	/**
+	 * Remove the edge without changing any vertex.
+	 * 
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
+	public boolean removeDiEdge(V begin, V end) {
+		if (!this.containsEdge(begin, end)) {
+			return false;
+		} else {
+			HashMap<V, E> nodes = map.get(begin);
+			nodes.remove(end);
+		}
+		return true;
+	}
+
+	/**
+	 * Remove the edge. If the action makes any vertex degree of 0, remove it.
+	 * 
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
+	public boolean removeDiEdgeWithVertices(V begin, V end) {
+		if (!this.containsEdge(begin, end)) {
+			return false;
+		} else {
+			HashMap<V, E> nodes = map.get(begin);
+			nodes.remove(end);
+			if (degreeAll(begin) == 0) {
+				map.remove(begin);
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Degree out.
+	 * 
+	 * @param vertex
+	 * @return
+	 */
+	public int degreeOut(V vertex) {
+		HashMap<V, E> nodes = map.get(vertex);
+		return nodes.size();
+	}
+
+	/**
+	 * Degree in.
+	 * 
+	 * @param vertex
+	 * @return
+	 */
+	public int degreeIn(V vertex) {
+		int degreeIn = 0;
+		for (Map.Entry<V, HashMap<V, E>> nodesEntry : map.entrySet()) {
+			HashMap<V, E> nodes = nodesEntry.getValue();
+			for (Map.Entry<V, E> e : nodes.entrySet()) {
+				if (e.getKey() == vertex) {
+					degreeIn++;
+				}
+			}
+		}
+		return degreeIn;
+	}
+
+	/**
+	 * Sum up degree in and degree out.
+	 * 
+	 * @param vertex
+	 * @return
+	 */
+	public int degreeAll(V vertex) {
+		return degreeIn(vertex) + degreeOut(vertex);
+	}
+
+	/**
+	 * Remove the edge (bidirectional) without changing any vertex.
+	 * 
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
+	public boolean removeEdge(V begin, V end) {
+		boolean b1 = removeDiEdge(begin, end);
+		boolean b2 = removeDiEdge(end, begin);
+		return b1 & b2;
+	}
+
+	/**
+	 * Remove the edge (bidirectional). If the action makes any vertex degree of 0,
+	 * remove it.
+	 * 
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
+	public boolean removeEdgeWithVertices(V begin, V end) {
+		boolean b1 = removeDiEdgeWithVertices(begin, end);
+		boolean b2 = removeDiEdgeWithVertices(end, begin);
+		return b1 & b2;
+	}
+
+	/**
 	 * 
 	 * @param begin
 	 * @param end
@@ -168,5 +272,16 @@ public class Graph<V, E> {
 		if (map.containsKey(vertex))
 			return true;
 		return false;
+	}
+
+	/**
+	 * Simple description of edges and vertices.
+	 * 
+	 * @return
+	 */
+	public String describe() {
+		int numVertices = vertices().size();
+		int numEdges = edges().size();
+		return numVertices + " vertices; " + numEdges + " edges.";
 	}
 }

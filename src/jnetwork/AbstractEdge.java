@@ -1,5 +1,7 @@
 package jnetwork;
 
+import file.Excelable;
+
 public abstract class AbstractEdge implements WeightedEdge, Excelable {
 
 	@Override
